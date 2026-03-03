@@ -1,66 +1,40 @@
 // Array de productos
 const productos = [
-  { nombre: "Remera", precio: 1200 },
-  { nombre: "Pantalón", precio: 2500 },
-  { nombre: "Zapatillas", precio: 4800 }
+    { id: 1, nombre: "Notebook", precio: 1500 },
+    { id: 2, nombre: "Mouse", precio: 50 },
+    { id: 3, nombre: "Teclado", precio: 100 },
+    { id: 4, nombre: "Monitor", precio: 800 }
 ];
 
-let carrito = [];
-let total = 0;
+// Obtener carrito desde localStorage o crear vacío
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Función para mostrar productos
-function mostrarProductos() {
-  console.log("Lista de productos disponibles:");
-  for (let i = 0; i < productos.length; i++) {
-    console.log(`${i + 1}. ${productos[i].nombre} - $${productos[i].precio}`);
-  }
-}
+// Contenedor
+const contenedorProductos = document.getElementById("productos");
 
-// Función para agregar productos al carrito
-function agregarProducto() {
-  let opcion = prompt(
-    "Ingrese el número del producto que desea comprar:\n1. Remera\n2. Pantalón\n3. Zapatillas"
-  );
+// Mostrar productos en DOM
+productos.forEach(producto => {
+    const div = document.createElement("div");
+    div.classList.add("card");
 
-  if (opcion >= 1 && opcion <= productos.length) {
-    let cantidad = prompt("Ingrese la cantidad:");
+    div.innerHTML = `
+        <h3>${producto.nombre}</h3>
+        <p>Precio: $${producto.precio}</p>
+        <button data-id="${producto.id}">Agregar al carrito</button>
+    `;
 
-    carrito.push({
-      producto: productos[opcion - 1],
-      cantidad: Number(cantidad)
-    });
+    contenedorProductos.appendChild(div);
+});
 
-    alert("Producto agregado al carrito");
-  } else {
-    alert("Opción inválida");
-  }
-}
+// Evento agregar al carrito
+contenedorProductos.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") {
+        const id = parseInt(e.target.getAttribute("data-id"));
+        const productoSeleccionado = productos.find(p => p.id === id);
 
-// Función para calcular el total
-function calcularTotal() {
-  total = 0;
+        carrito.push(productoSeleccionado);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
 
-  for (let item of carrito) {
-    total += item.producto.precio * item.cantidad;
-  }
-
-  console.log("Detalle del carrito:", carrito);
-  alert(`El total de su compra es: $${total}`);
-}
-
-// Flujo principal del simulador
-function iniciarSimulador() {
-  alert("Bienvenido al simulador de compras");
-  let continuar = true;
-
-  while (continuar) {
-    mostrarProductos();
-    agregarProducto();
-    continuar = confirm("¿Desea agregar otro producto?");
-  }
-
-  calcularTotal();
-}
-
-// Llamada a la función principal
-iniciarSimulador();
+        alert("Producto agregado al carrito");
+    }
+});
