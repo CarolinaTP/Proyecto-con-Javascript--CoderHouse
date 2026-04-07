@@ -5,7 +5,7 @@ const totalElemento = document.getElementById("total");
 const botonVaciar = document.getElementById("vaciarCarrito");
 const botonFinalizar = document.getElementById("finalizarCompra");
 
-// Guardar carrito (MEJORA)
+// Guardar carrito
 function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
@@ -22,7 +22,7 @@ function mostrarCarrito() {
 
     carrito.forEach(producto => {
 
-        // Validación (datos viejos)
+        // Validación
         if (!producto.cantidad) {
             producto.cantidad = 1;
         }

@@ -3,12 +3,12 @@ let productos = [];
 // Carrito
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Guardar carrito (MEJORA)
+// Guardar carrito
 function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// Cargar productos desde JSON
+// Cargar productos desde json
 async function cargarProductos() {
     try {
         const response = await fetch("./js/productos.json");
