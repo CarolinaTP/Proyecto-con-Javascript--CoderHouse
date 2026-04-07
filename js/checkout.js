@@ -5,6 +5,11 @@ const totalElemento = document.getElementById("total");
 const botonVaciar = document.getElementById("vaciarCarrito");
 const botonFinalizar = document.getElementById("finalizarCompra");
 
+// Guardar carrito (MEJORA)
+function guardarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
 // Mostrar carrito
 function mostrarCarrito() {
     contenedorCarrito.innerHTML = "";
@@ -17,7 +22,7 @@ function mostrarCarrito() {
 
     carrito.forEach(producto => {
 
-        // Validación por si viene viejo
+        // Validación (datos viejos)
         if (!producto.cantidad) {
             producto.cantidad = 1;
         }
@@ -60,7 +65,7 @@ function cambiarCantidad(id, cambio) {
         carrito = carrito.filter(p => p.id !== id);
     }
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    guardarCarrito();
     mostrarCarrito();
 }
 

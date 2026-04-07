@@ -3,10 +3,15 @@ let productos = [];
 // Carrito
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
+// Guardar carrito (MEJORA)
+function guardarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
 // Cargar productos desde JSON
 async function cargarProductos() {
     try {
-        const response = await fetch("js/productos.json");
+        const response = await fetch("./js/productos.json");
 
         if (!response.ok) {
             throw new Error("Error al cargar JSON");
@@ -17,6 +22,12 @@ async function cargarProductos() {
 
     } catch (error) {
         console.error("Error:", error);
+
+        Swal.fire({
+            title: "Error",
+            text: "No se pudieron cargar los productos",
+            icon: "error"
+        });
     }
 }
 
@@ -57,7 +68,7 @@ function agregarAlCarrito(id) {
         carrito.push({ ...producto, cantidad: 1 });
     }
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    guardarCarrito();
 
     Swal.fire({
         title: "Agregado",
