@@ -16,6 +16,12 @@ function mostrarCarrito() {
     }
 
     carrito.forEach(producto => {
+
+        // Validación por si viene viejo
+        if (!producto.cantidad) {
+            producto.cantidad = 1;
+        }
+
         const div = document.createElement("div");
         div.classList.add("card");
 
@@ -24,14 +30,13 @@ function mostrarCarrito() {
             <p>$${producto.precio} x ${producto.cantidad}</p>
         `;
 
-        // Botones + y -
         const btnSumar = document.createElement("button");
         btnSumar.textContent = "+";
-        btnSumar.onclick = () => cambiarCantidad(producto.id, 1);
+        btnSumar.addEventListener("click", () => cambiarCantidad(producto.id, 1));
 
         const btnRestar = document.createElement("button");
         btnRestar.textContent = "-";
-        btnRestar.onclick = () => cambiarCantidad(producto.id, -1);
+        btnRestar.addEventListener("click", () => cambiarCantidad(producto.id, -1));
 
         div.appendChild(btnSumar);
         div.appendChild(btnRestar);
@@ -47,12 +52,12 @@ function mostrarCarrito() {
 function cambiarCantidad(id, cambio) {
     const producto = carrito.find(p => p.id === id);
 
-    if (producto) {
-        producto.cantidad += cambio;
+    if (!producto) return;
 
-        if (producto.cantidad <= 0) {
-            carrito = carrito.filter(p => p.id !== id);
-        }
+    producto.cantidad += cambio;
+
+    if (producto.cantidad <= 0) {
+        carrito = carrito.filter(p => p.id !== id);
     }
 
     localStorage.setItem("carrito", JSON.stringify(carrito));

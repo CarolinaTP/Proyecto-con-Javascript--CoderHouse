@@ -1,38 +1,52 @@
-// Productos
-const productos = [
-    { id: 1, nombre: "Notebook", precio: 1500 },
-    { id: 2, nombre: "Mouse", precio: 50 },
-    { id: 3, nombre: "Teclado", precio: 100 },
-    { id: 4, nombre: "Monitor", precio: 800 }
-];
+let productos = [];
 
 // Carrito
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Contenedor
-const contenedorProductos = document.getElementById("productos");
+// Cargar productos desde JSON
+async function cargarProductos() {
+    try {
+        const response = await fetch("js/productos.json");
+
+        if (!response.ok) {
+            throw new Error("Error al cargar JSON");
+        }
+
+        productos = await response.json();
+        renderProductos();
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
 
 // Render productos
-productos.forEach(producto => {
-    const div = document.createElement("div");
-    div.classList.add("card");
+function renderProductos() {
+    const contenedorProductos = document.getElementById("productos");
+    contenedorProductos.innerHTML = "";
 
-    const boton = document.createElement("button");
-    boton.textContent = "Agregar al carrito";
+    productos.forEach(producto => {
+        const div = document.createElement("div");
+        div.classList.add("card");
 
-    // SIN dataset
-    boton.onclick = () => agregarAlCarrito(producto.id);
+        const boton = document.createElement("button");
+        boton.textContent = "Agregar al carrito";
 
-    div.innerHTML = `
-        <h3>${producto.nombre}</h3>
-        <p>Precio: $${producto.precio}</p>
-    `;
+        boton.addEventListener("click", () => {
+            agregarAlCarrito(producto.id);
+        });
 
-    div.appendChild(boton);
-    contenedorProductos.appendChild(div);
-});
+        div.innerHTML = `
+            <h3>${producto.nombre}</h3>
+            <p>Precio: $${producto.precio}</p>
+        `;
 
-// Agregar al carrito con cantidad
+        div.appendChild(boton);
+        contenedorProductos.appendChild(div);
+    });
+}
+
+// Agregar al carrito
 function agregarAlCarrito(id) {
     const producto = productos.find(p => p.id === id);
     const existe = carrito.find(p => p.id === id);
@@ -46,9 +60,13 @@ function agregarAlCarrito(id) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 
     Swal.fire({
-    title: "Agregado",
-    text: "Producto añadido al carrito",
-    icon: "success",
-    timer: 1200,
-    showConfirmButton: false
-});}
+        title: "Agregado",
+        text: "Producto añadido al carrito",
+        icon: "success",
+        timer: 1200,
+        showConfirmButton: false
+    });
+}
+
+// Inicializar
+cargarProductos();
